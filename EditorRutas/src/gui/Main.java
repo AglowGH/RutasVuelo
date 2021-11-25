@@ -10,7 +10,6 @@ public class Main
 		myFrame = new MyFrame();
 		myFrame.mostrarFrame();
 		
-		
 	}
 	
 }
