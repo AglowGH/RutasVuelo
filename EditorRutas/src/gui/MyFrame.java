@@ -675,9 +675,11 @@ public class MyFrame extends JFrame implements ActionListener
 					ListaNodo nodos = (ListaNodo) ois.readObject();
 					
 					MyPanel.lista = nodos;
+					MyPanel.lista.actualizarOrden();
+					panel.contadorNodos = ListaNodo.orden;
 					panel.repaint();
 					ois.close();
-				}catch (IOException e) 
+				}catch (IOException e)
 				{
 					e.printStackTrace();
 				}catch(ClassNotFoundException e )

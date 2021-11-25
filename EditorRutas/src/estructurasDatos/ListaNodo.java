@@ -161,10 +161,25 @@ public class ListaNodo implements Serializable
 		Nodo auxN = first;
 		for(int i = 0; i < orden;i++)
 		{
+			System.out.println(nombre + " = " + auxN.getNombre());
 			if(nombre.equals(auxN.getNombre()))return auxN;
 			auxN = auxN.getNext();
 		}
 		return null;
+	}
+	
+	public void actualizarOrden()
+	{
+		int contador = 0;
+		Nodo aux = first;
+		
+		while(aux != null)
+		{
+			contador +=1;
+			aux = aux.getNext();
+		}
+		
+		orden = contador;
 	}
 	
 }

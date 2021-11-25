@@ -21,7 +21,7 @@ public class MyPanel extends JPanel implements MouseListener
 	public static Point2D coordenadas = null;
 	public static Point2D coordenadas2 = null;
 	private String name = null;
-	private int contadorNodos = 0;
+	public int contadorNodos = 0;
 	private static final long serialVersionUID = 1L; 
 	public static boolean reImprimir = false;
 	
