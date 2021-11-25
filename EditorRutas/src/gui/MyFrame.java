@@ -65,6 +65,8 @@ public class MyFrame extends JFrame implements ActionListener
 	private JButton importarAristas;
 	private JLabel etiqueta1;
 	private JLabel etiqueta2;
+	private JLabel etiqueta3;
+	private JComboBox<String>distanciaEntreNodos;
 	///////////////
 	
 	MyFrame()
@@ -212,6 +214,17 @@ public class MyFrame extends JFrame implements ActionListener
 		comboBoxGrosor.addActionListener(this);
 		botones.add(comboBoxGrosor);
 		
+		etiqueta3 = new JLabel("Distancia entre nodos:");
+		botones.add(etiqueta3);
+		
+		distanciaEntreNodos = new JComboBox<String>();
+		distanciaEntreNodos.addItem("16");
+		distanciaEntreNodos.addItem("14");
+		distanciaEntreNodos.addItem("12");
+		distanciaEntreNodos.addItem("10");
+		distanciaEntreNodos.addItem("8");
+		distanciaEntreNodos.addActionListener(this);
+		botones.add(distanciaEntreNodos);
 		////////////////////////////////////////////////////////////
 		pack();
 		setLocationRelativeTo(null);
@@ -698,6 +711,12 @@ public class MyFrame extends JFrame implements ActionListener
 					e.printStackTrace();
 				}
 			}
+		}
+		
+		if(arg0.getSource() == distanciaEntreNodos)
+		{
+			MyPanel.distanciaNodo = Integer.parseInt(distanciaEntreNodos.getSelectedItem().toString());
+			panel.repaint();
 		}
 	}
 	
