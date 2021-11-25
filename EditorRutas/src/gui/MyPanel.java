@@ -29,6 +29,8 @@ public class MyPanel extends JPanel implements MouseListener
 	////////////////////////////
 	private Image map;
 	public static File archivoMapa;
+	public static int ballSize = 16;
+	public static int grosor = 1;
 	////////////////////////////
 	
 	MyPanel()
@@ -65,7 +67,7 @@ public class MyPanel extends JPanel implements MouseListener
 		//}
 	}
 	
-	public void dibujarMapa(Graphics g2)
+	public void dibujarMapa(Graphics2D g2)
 	{
 		if(archivoMapa != null)
 		{
@@ -83,19 +85,20 @@ public class MyPanel extends JPanel implements MouseListener
 		}
 	}
 	
-	public void pintarArista(Graphics g2)
+	public void pintarArista(Graphics2D g2)
 	{
 		if(coordenadas2 == null)
 		{
-			MyFrame.verticeSeleccionado = lista.buscarNodo(coordenadas, 15, 15);
+			MyFrame.verticeSeleccionado = lista.buscarNodo(coordenadas,ballSize,ballSize);////////////////////////////////////////////////////////
 			coordenadas2 = coordenadas;
 		}else
 		{
-			Nodo n1 = lista.buscarNodo(coordenadas,15,15);
-			Nodo n2 = lista.buscarNodo(coordenadas2,15, 15);
+			Nodo n1 = lista.buscarNodo(coordenadas,ballSize,ballSize);
+			Nodo n2 = lista.buscarNodo(coordenadas2,ballSize,ballSize);
 			Arista arista = aristas.buscarArista(n1, n2);
 			if(arista == null && n1 != n2)
 			{
+				g2.setStroke(new BasicStroke(grosor));///////////////////////////////////////////////////////////////////////////////////////////////
 				g2.drawLine((int)coordenadas2.getX(),(int)coordenadas2.getY(),(int)coordenadas.getX(),(int)coordenadas.getY());
 				
 				Point puntoMedio = calcularPuntoMedio(coordenadas2,coordenadas);
@@ -123,7 +126,7 @@ public class MyPanel extends JPanel implements MouseListener
 		contadorNodos +=1;
 		name = String.valueOf(contadorNodos);
 		lista.insertar(coordenadas,name);
-		g2.fillOval((int)coordenadas.getX(),(int)coordenadas.getY(),15,15);
+		g2.fillOval((int)coordenadas.getX(),(int)coordenadas.getY(),ballSize,ballSize);///////////////////////////////////
 		g2.setFont(new Font("Ink Free",Font.BOLD,10));
 		g2.drawString(name,(int)coordenadas.getX(),(int)coordenadas.getY()-10);
 		coordenadas2 = null;
@@ -137,7 +140,7 @@ public class MyPanel extends JPanel implements MouseListener
 		while(auxN != null) 
 		{
 			g2.setPaint(auxN.getColor());
-			g2.fillOval((int)auxN.getCoordenadas().getX(),(int)auxN.getCoordenadas().getY(),15,15);
+			g2.fillOval((int)auxN.getCoordenadas().getX(),(int)auxN.getCoordenadas().getY(),ballSize,ballSize);/////////////////////////////////////
 			g2.setPaint(Color.black);
 			g2.setFont(new Font("Ink Free",Font.BOLD,10));
 			g2.drawString(auxN.getNombre(),(int)auxN.getCoordenadas().getX(),(int)auxN.getCoordenadas().getY()-10);
@@ -147,6 +150,7 @@ public class MyPanel extends JPanel implements MouseListener
 		while(auxA != null)
 		{
 			g2.setPaint(auxA.getColor());
+			g2.setStroke(new BasicStroke(grosor));///////////////////////////////////////////////////////////////////////////////////////////////////////
 			g2.drawLine((int)auxA.getPrimerNodo().getCoordenadas().getX() + 7,(int)auxA.getPrimerNodo().getCoordenadas().getY() + 7 ,(int)auxA.getSegundoNodo().getCoordenadas().getX() +7,(int)auxA.getSegundoNodo().getCoordenadas().getY() + 7);
 			g2.setPaint(Color.black);
 			Point puntoMedio = calcularPuntoMedio(auxA.getPrimerNodo().getCoordenadas(),auxA.getSegundoNodo().getCoordenadas());

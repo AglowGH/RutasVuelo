@@ -6,8 +6,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class MyFrame extends JFrame implements ActionListener
@@ -57,6 +59,12 @@ public class MyFrame extends JFrame implements ActionListener
 	private JFileChooser fc;
 	private JButton selectMap;
 	private JButton guardarMapa;
+	private JComboBox<String> comboBoxCalibre;
+	private JComboBox<String> comboBoxGrosor;
+	private JButton importarNodos;
+	private JButton importarAristas;
+	private JLabel etiqueta1;
+	private JLabel etiqueta2;
 	///////////////
 	
 	MyFrame()
@@ -73,17 +81,17 @@ public class MyFrame extends JFrame implements ActionListener
 		cascaron = new JPanel();
 		cascaron.add(panel);
 		cascaron.setPreferredSize(new Dimension(600,600));  
-		cascaron.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Pizarra"));
+		cascaron.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Mapa"));
 		this.add(cascaron,BorderLayout.CENTER);
 		
 		botones = new JPanel();
 		MyGrid = new GridLayout();
-		MyGrid.setColumns(1);
+		MyGrid.setColumns(2);
 		MyGrid.setVgap(5);
-		MyGrid.setRows(12);
+		MyGrid.setRows(11);
 		MyGrid.setHgap(5);
 		botones.setLayout(MyGrid);
-		botones.setPreferredSize(new Dimension(200,600));
+		botones.setPreferredSize(new Dimension(400,600));
 		botones.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Opciones"));
 		add(botones,BorderLayout.LINE_END);
 		
@@ -172,6 +180,38 @@ public class MyFrame extends JFrame implements ActionListener
 		guardarMapa = new JButton("Guardar Mapa");
 		guardarMapa.addActionListener(this);
 		botones.add(guardarMapa);
+		
+		importarNodos = new JButton("Importar Nodos");
+		importarNodos.addActionListener(this);
+		botones.add(importarNodos);
+		
+		importarAristas = new JButton("Importar Aristas");
+		importarAristas.addActionListener(this);
+		botones.add(importarAristas);
+		
+		etiqueta1 = new JLabel("Tamaño letra: ");
+		botones.add(etiqueta1);
+		
+		etiqueta2 = new JLabel("Grosor líneas: ");
+		botones.add(etiqueta2);
+		
+		comboBoxCalibre = new JComboBox<String>();
+		comboBoxCalibre.addItem("16");
+		comboBoxCalibre.addItem("14");
+		comboBoxCalibre.addItem("12");
+		comboBoxCalibre.addItem("10");
+		comboBoxCalibre.addActionListener(this);
+		botones.add(comboBoxCalibre);
+		
+		comboBoxGrosor = new JComboBox<String>();
+		comboBoxGrosor.addItem("1");
+		comboBoxGrosor.addItem("2");
+		comboBoxGrosor.addItem("3");
+		comboBoxGrosor.addItem("4");
+		comboBoxGrosor.addItem("5");
+		comboBoxGrosor.addActionListener(this);
+		botones.add(comboBoxGrosor);
+		
 		////////////////////////////////////////////////////////////
 		pack();
 		setLocationRelativeTo(null);
@@ -187,7 +227,7 @@ public class MyFrame extends JFrame implements ActionListener
 	{
 		try
 		{
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/home/rick/github/RutasVuelo/EditorRutas/src/"+nombreArchivo1));
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nombreArchivo1));
 			oos.writeObject(MyPanel.lista);
 			oos.close();
 		}catch(IOException e)
@@ -197,7 +237,7 @@ public class MyFrame extends JFrame implements ActionListener
 		
 		try
 		{
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/home/rick/github/RutasVuelo/EditorRutas/src/"+nombreArchivo2));
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nombreArchivo2));
 			oos.writeObject(MyPanel.aristas);
 			oos.close();
 			
@@ -207,7 +247,7 @@ public class MyFrame extends JFrame implements ActionListener
 		}
 	}
 	
-	public void obtenerNombre()
+	private void obtenerNombre()
 	{
 		if(verticeSeleccionado != null) 
 		{
@@ -488,21 +528,22 @@ public class MyFrame extends JFrame implements ActionListener
 			}
 		}
 		
+		if(cambiarNombre ==  arg0.getSource())
+		{
+			activarMouse = false;
+			obtenerNombre();
+			MyPanel.coordenadas2 = null;
+			MyPanel.coordenadas = null;
+			activarMouse = true;
+			cascaron.setVisible(false);
+			cascaron.setVisible(true);
+			panel.setVisible(false);
+			panel.setVisible(true);
+			MyPanel.reImprimir = true;
+		}
+		
 		if(arg0.getSource() == DFS) 
 		{
-			if(cambiarNombre ==  arg0.getSource())
-			{
-				activarMouse = false;
-				obtenerNombre();
-				MyPanel.coordenadas2 = null;
-				MyPanel.coordenadas = null;
-				activarMouse = true;
-				cascaron.setVisible(false);
-				cascaron.setVisible(true);
-				panel.setVisible(false);
-				panel.setVisible(true);
-				MyPanel.reImprimir = true;
-			}
 			
 			
 			if(verticeSeleccionado != null)
@@ -590,7 +631,93 @@ public class MyFrame extends JFrame implements ActionListener
 		
 		if(arg0.getSource() == guardarMapa)
 		{
-			guardarSerie("archivo1.txt","archivo2.txt");
+			String nombreDirectorio = getNombreDirectorio();
+			File carpeta = new File("mapas/"+nombreDirectorio);
+			carpeta.mkdirs();
+			guardarSerie("mapas/"+nombreDirectorio+"/"+"lista_nodos.txt","mapas/"+nombreDirectorio+"/"+"lista_aristas.txt");
 		}
+		
+		if(arg0.getSource() == comboBoxCalibre)
+		{
+			MyPanel.ballSize = Integer.parseInt(comboBoxCalibre.getSelectedItem().toString());
+			panel.repaint();
+		}
+		
+		if(arg0.getSource() == comboBoxGrosor)
+		{
+			MyPanel.grosor = Integer.parseInt(comboBoxGrosor.getSelectedItem().toString());
+			panel.repaint();
+		}
+		
+		if(arg0.getSource() == importarNodos)
+		{
+			int seleccion = fc.showOpenDialog(this);
+			
+			if(seleccion == JFileChooser.APPROVE_OPTION)
+			{
+				File archivo = fc.getSelectedFile();
+				try {
+					ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo.getAbsolutePath()));
+					
+					ListaNodo nodos = (ListaNodo) ois.readObject();
+					
+					MyPanel.lista = nodos;
+					panel.repaint();
+					ois.close();
+				}catch (IOException e) 
+				{
+					e.printStackTrace();
+				}catch(ClassNotFoundException e )
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		if(arg0.getSource() == importarAristas)
+		{
+			int seleccion = fc.showOpenDialog(this);
+			
+			if(seleccion == JFileChooser.APPROVE_OPTION)
+			{
+				File archivo = fc.getSelectedFile();
+				
+				try {
+					ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo.getAbsolutePath()));
+					
+					ListaArista aristas = (ListaArista) ois.readObject();
+					
+					MyPanel.aristas = aristas;
+					panel.repaint();
+					ois.close();
+				}catch (IOException e) 
+				{
+					e.printStackTrace();
+				}catch(ClassNotFoundException e )
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public String getNombreDirectorio()
+	{
+		
+		String nombre = (String) JOptionPane.showInputDialog("Escribe nombre del directorio:");
+		
+		if(nombre == null)
+		{
+			return null;
+		}
+		
+		nombre.replaceAll("\\s","");
+		
+		if(nombre.equals(""))
+		{
+			return null;
+		}
+		
+		return nombre;
 	}
 }
