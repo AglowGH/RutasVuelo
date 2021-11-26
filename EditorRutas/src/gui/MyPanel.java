@@ -32,6 +32,7 @@ public class MyPanel extends JPanel implements MouseListener
 	public static int ballSize = 16;
 	public static int grosor = 1;
 	public static int distanciaNodo=16;
+	public static boolean drawed = false;
 	////////////////////////////
 	
 	MyPanel()
@@ -45,34 +46,28 @@ public class MyPanel extends JPanel implements MouseListener
 	public void paint(Graphics g)
 	{
 		Graphics2D g2 = (Graphics2D)g;
-		
-		dibujarMapa(g2);
-		pintarListas(g2);
-		
-		if(coordenadas != null)
+		if(drawed)
 		{
-			if(!lista.buscarEntreRangos(coordenadas, distanciaNodo,ballSize,ballSize))///////////
+			dibujarMapa(g2);
+			pintarListas(g2);
+			
+			if(coordenadas != null)
 			{
-				pintarNodo(g2);
-				
-			}else if(lista.buscarEntreRangos(coordenadas, 0,ballSize,ballSize))///////////
-			{
-				pintarArista(g2);
+				if(!lista.buscarEntreRangos(coordenadas, distanciaNodo,ballSize,ballSize))///////////
+				{
+					pintarNodo(g2);
+					
+				}else if(lista.buscarEntreRangos(coordenadas, 0,ballSize,ballSize))///////////
+				{
+					pintarArista(g2);
+				}
 			}
 		}
-		
-		//if(reImprimir)
-		//{
-		//	pintarListas(g2);
-		//	g2.drawImage(map,0,0,getWidth(),getHeight(),this);
-		//}
 	}
-	
 	public void dibujarMapa(Graphics2D g2)
 	{
 		if(archivoMapa != null)
 		{
-			System.out.print(archivoMapa.getAbsolutePath());
 			File image = new File(archivoMapa.getAbsolutePath());
 			
 			try 

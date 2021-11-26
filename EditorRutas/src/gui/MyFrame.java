@@ -191,7 +191,7 @@ public class MyFrame extends JFrame implements ActionListener
 		importarAristas.addActionListener(this);
 		botones.add(importarAristas);
 		
-		etiqueta1 = new JLabel("Tamaño letra: ");
+		etiqueta1 = new JLabel("Tamaño nodo: ");
 		botones.add(etiqueta1);
 		
 		etiqueta2 = new JLabel("Grosor líneas: ");
@@ -637,6 +637,8 @@ public class MyFrame extends JFrame implements ActionListener
 			{
 				File imagen = fc.getSelectedFile();
 				MyPanel.archivoMapa = imagen;
+				MyPanel.drawed = true;
+				MyPanel.coordenadas = null;
 				panel.repaint();
 				
 			}
