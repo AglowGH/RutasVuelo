@@ -33,6 +33,8 @@ public class MyPanel extends JPanel implements MouseListener
 	public static int grosor = 1;
 	public static int distanciaNodo=16;
 	public static boolean drawed = false;
+	public static boolean ver = false;
+	public static String nombreAeropuerto = null;
 	////////////////////////////
 	
 	MyPanel()
@@ -48,18 +50,28 @@ public class MyPanel extends JPanel implements MouseListener
 		Graphics2D g2 = (Graphics2D)g;
 		if(drawed)
 		{
-			dibujarMapa(g2);
-			pintarListas(g2);
-			
-			if(coordenadas != null)
+			if(!ver)
 			{
-				if(!lista.buscarEntreRangos(coordenadas, distanciaNodo,ballSize,ballSize))///////////
+				dibujarMapa(g2);
+				pintarListas(g2);
+				
+				if(coordenadas != null)
 				{
-					pintarNodo(g2);
-					
-				}else if(lista.buscarEntreRangos(coordenadas, 0,ballSize,ballSize))///////////
+					if(!lista.buscarEntreRangos(coordenadas, distanciaNodo,ballSize,ballSize))
+					{
+						pintarNodo(g2);
+						
+					}else if(lista.buscarEntreRangos(coordenadas, 0,ballSize,ballSize))
+					{
+						pintarArista(g2);
+					}
+				}
+			}else
+			{
+				dibujarMapa(g2);
+				if(nombreAeropuerto != null)
 				{
-					pintarArista(g2);
+					pintarAeropuerto(g2,nombreAeropuerto);
 				}
 			}
 		}
@@ -129,6 +141,7 @@ public class MyPanel extends JPanel implements MouseListener
 		g2.drawString(name,(int)coordenadas.getX(),(int)coordenadas.getY()-10);
 		coordenadas2 = null;
 		g2.setColor(Color.black);
+		MyFrame.aeropuertos.addItem(name);
 		MyFrame.verticeSeleccionado = null;
 	}
 	
@@ -159,6 +172,45 @@ public class MyPanel extends JPanel implements MouseListener
 			g2.setColor(Color.black);
 		}
 		reImprimir = false;
+	}
+	
+	public void pintarAeropuerto(Graphics2D g2,String nombre)
+	{
+		Arista auxA = aristas.peek();
+		
+		while(auxA != null)
+		{
+			if(auxA.getPrimerNodo().getNombre().equals(nombre) || auxA.getSegundoNodo().getNombre().equals(nombre))
+			{
+				g2.setPaint(auxA.getColor());
+				g2.setStroke(new BasicStroke(grosor));
+				g2.drawLine((int)auxA.getPrimerNodo().getCoordenadas().getX() + 7,(int)auxA.getPrimerNodo().getCoordenadas().getY() + 7 ,(int)auxA.getSegundoNodo().getCoordenadas().getX() +7,(int)auxA.getSegundoNodo().getCoordenadas().getY() + 7);
+				g2.setPaint(Color.RED);
+				Point puntoMedio = calcularPuntoMedio(auxA.getPrimerNodo().getCoordenadas(),auxA.getSegundoNodo().getCoordenadas());
+				g2.drawString(String.valueOf(auxA.getPeso()),(int)puntoMedio.getX() + 5,(int)puntoMedio.getY());
+				g2.setColor(Color.black);
+				
+				Nodo n1 = auxA.getPrimerNodo();
+				Nodo n2 = auxA.getSegundoNodo();
+				
+				g2.setPaint(n1.getColor());
+				g2.fillOval((int)n1.getCoordenadas().getX(),(int)n1.getCoordenadas().getY(),ballSize,ballSize);
+				g2.setPaint(Color.RED);
+				g2.setFont(new Font("Ink Free",Font.BOLD,10));
+				g2.drawString(n1.getNombre(),(int)n1.getCoordenadas().getX(),(int)n1.getCoordenadas().getY()-10);
+				g2.setColor(Color.black);
+				
+				g2.setPaint(n2.getColor());
+				g2.fillOval((int)n2.getCoordenadas().getX(),(int)n2.getCoordenadas().getY(),ballSize,ballSize);
+				g2.setPaint(Color.RED);
+				g2.setFont(new Font("Ink Free",Font.BOLD,10));
+				g2.drawString(n2.getNombre(),(int)n2.getCoordenadas().getX(),(int)n2.getCoordenadas().getY()-10);
+				g2.setColor(Color.black);
+				
+			}
+			auxA = auxA.getNext();
+		}
+		
 	}
 	
 	public Point calcularPuntoMedio(Point2D p1, Point2D p2)

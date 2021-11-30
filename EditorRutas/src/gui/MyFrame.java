@@ -67,6 +67,8 @@ public class MyFrame extends JFrame implements ActionListener
 	private JLabel etiqueta2;
 	private JLabel etiqueta3;
 	private JComboBox<String>distanciaEntreNodos;
+	private JButton ver;
+	static JComboBox<String> aeropuertos;
 	///////////////
 	
 	MyFrame()
@@ -225,6 +227,16 @@ public class MyFrame extends JFrame implements ActionListener
 		distanciaEntreNodos.addItem("8");
 		distanciaEntreNodos.addActionListener(this);
 		botones.add(distanciaEntreNodos);
+		
+		ver = new JButton("ver");
+		ver.addActionListener(this);
+		botones.add(ver);
+		
+		aeropuertos = new JComboBox<String>();
+		aeropuertos.addActionListener(this);
+		aeropuertos.addItem("");
+		botones.add(aeropuertos);
+		
 		////////////////////////////////////////////////////////////
 		pack();
 		setLocationRelativeTo(null);
@@ -422,6 +434,14 @@ public class MyFrame extends JFrame implements ActionListener
 		{
 			MyPanel.aristas.eliminarAristas(verticeSeleccionado);
 			MyPanel.lista.eliminar(verticeSeleccionado);
+			String nombre = verticeSeleccionado.getNombre();
+			for(int i=0;i<aeropuertos.getItemCount();i++)
+			{
+				if(nombre.equals(aeropuertos.getItemAt(i)))
+				{
+					aeropuertos.removeItemAt(i);
+				}
+			}
 			verticeSeleccionado = null;
 		}else
 		{
@@ -602,6 +622,7 @@ public class MyFrame extends JFrame implements ActionListener
 			panel.setVisible(false);
 			panel.setVisible(true);
 			MyPanel.reImprimir = true;
+			
 		}
 		
 		if(arg0.getSource() == eliminarArista)
@@ -681,6 +702,14 @@ public class MyFrame extends JFrame implements ActionListener
 					panel.contadorNodos = ListaNodo.orden;
 					panel.repaint();
 					ois.close();
+					
+					Nodo node = nodos.peek();
+					while(node != null)
+					{
+						aeropuertos.addItem(node.getNombre());
+						
+						node = node.getNext();
+					}
 				}catch (IOException e)
 				{
 					e.printStackTrace();
@@ -689,6 +718,7 @@ public class MyFrame extends JFrame implements ActionListener
 					e.printStackTrace();
 				}
 			}
+			
 		}
 		
 		if(arg0.getSource() == importarAristas)
@@ -721,6 +751,29 @@ public class MyFrame extends JFrame implements ActionListener
 		{
 			MyPanel.distanciaNodo = Integer.parseInt(distanciaEntreNodos.getSelectedItem().toString());
 			panel.repaint();
+		}
+		
+		if(arg0.getSource() == aeropuertos)
+		{
+			String item = (String)aeropuertos.getSelectedItem();
+			if(!item.equals(""))
+			{
+				MyPanel.nombreAeropuerto = item;
+				cascaron.setVisible(false);
+				cascaron.setVisible(true);
+				panel.setVisible(false);
+				panel.setVisible(true);
+				panel.repaint();
+			}
+		}
+		
+		if(arg0.getSource() == ver)
+		{
+			MyPanel.ver = !MyPanel.ver;
+			if(!MyPanel.ver)
+			{
+				panel.repaint();
+			}
 		}
 	}
 	
