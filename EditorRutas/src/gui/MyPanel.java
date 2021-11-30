@@ -73,6 +73,8 @@ public class MyPanel extends JPanel implements MouseListener
 				{
 					pintarAeropuerto(g2,nombreAeropuerto);
 				}
+				coordenadas2 = null;
+				coordenadas = null;
 			}
 		}
 	}
@@ -97,7 +99,7 @@ public class MyPanel extends JPanel implements MouseListener
 	{
 		if(coordenadas2 == null)
 		{
-			MyFrame.verticeSeleccionado = lista.buscarNodo(coordenadas,ballSize,ballSize);////////////////////////////////////////////////////////
+			MyFrame.verticeSeleccionado = lista.buscarNodo(coordenadas,ballSize,ballSize);
 			coordenadas2 = coordenadas;
 		}else
 		{
@@ -106,7 +108,7 @@ public class MyPanel extends JPanel implements MouseListener
 			Arista arista = aristas.buscarArista(n1, n2);
 			if(arista == null && n1 != n2)
 			{
-				g2.setStroke(new BasicStroke(grosor));///////////////////////////////////////////////////////////////////////////////////////////////
+				g2.setStroke(new BasicStroke(grosor));
 				g2.drawLine((int)coordenadas2.getX(),(int)coordenadas2.getY(),(int)coordenadas.getX(),(int)coordenadas.getY());
 				
 				Point puntoMedio = calcularPuntoMedio(coordenadas2,coordenadas);
@@ -135,7 +137,7 @@ public class MyPanel extends JPanel implements MouseListener
 		contadorNodos +=1;
 		name = String.valueOf(contadorNodos);
 		lista.insertar(coordenadas,name);
-		g2.fillOval((int)coordenadas.getX(),(int)coordenadas.getY(),ballSize,ballSize);///////////////////////////////////
+		g2.fillOval((int)coordenadas.getX(),(int)coordenadas.getY(),ballSize,ballSize);
 		g2.setFont(new Font("Ink Free",Font.BOLD,10));
 		g2.setColor(Color.RED);
 		g2.drawString(name,(int)coordenadas.getX(),(int)coordenadas.getY()-10);
@@ -152,7 +154,7 @@ public class MyPanel extends JPanel implements MouseListener
 		while(auxN != null) 
 		{
 			g2.setPaint(auxN.getColor());
-			g2.fillOval((int)auxN.getCoordenadas().getX(),(int)auxN.getCoordenadas().getY(),ballSize,ballSize);/////////////////////////////////////
+			g2.fillOval((int)auxN.getCoordenadas().getX(),(int)auxN.getCoordenadas().getY(),ballSize,ballSize);
 			g2.setPaint(Color.RED);
 			g2.setFont(new Font("Ink Free",Font.BOLD,10));
 			g2.drawString(auxN.getNombre(),(int)auxN.getCoordenadas().getX(),(int)auxN.getCoordenadas().getY()-10);
@@ -163,7 +165,7 @@ public class MyPanel extends JPanel implements MouseListener
 		while(auxA != null)
 		{
 			g2.setPaint(auxA.getColor());
-			g2.setStroke(new BasicStroke(grosor));///////////////////////////////////////////////////////////////////////////////////////////////////////
+			g2.setStroke(new BasicStroke(grosor));
 			g2.drawLine((int)auxA.getPrimerNodo().getCoordenadas().getX() + 7,(int)auxA.getPrimerNodo().getCoordenadas().getY() + 7 ,(int)auxA.getSegundoNodo().getCoordenadas().getX() +7,(int)auxA.getSegundoNodo().getCoordenadas().getY() + 7);
 			g2.setPaint(Color.RED);
 			Point puntoMedio = calcularPuntoMedio(auxA.getPrimerNodo().getCoordenadas(),auxA.getSegundoNodo().getCoordenadas());
@@ -177,6 +179,13 @@ public class MyPanel extends JPanel implements MouseListener
 	public void pintarAeropuerto(Graphics2D g2,String nombre)
 	{
 		Arista auxA = aristas.peek();
+		Nodo node = lista.buscarNodo(nombre);
+		g2.setPaint(node.getColor());
+		g2.fillOval((int)node.getCoordenadas().getX(),(int)node.getCoordenadas().getY(),ballSize,ballSize);
+		g2.setPaint(Color.RED);
+		g2.setFont(new Font("Ink Free",Font.BOLD,10));
+		g2.drawString(node.getNombre(),(int)node.getCoordenadas().getX(),(int)node.getCoordenadas().getY()-10);
+		g2.setColor(Color.black);
 		
 		while(auxA != null)
 		{

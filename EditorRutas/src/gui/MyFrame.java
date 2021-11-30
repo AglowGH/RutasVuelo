@@ -293,8 +293,17 @@ public class MyFrame extends JFrame implements ActionListener
 				JOptionPane.showMessageDialog(botones,"Este nombre ya fue ocupado!!!!");
 				return;
 			}
-			
+			String nombreAnterior = verticeSeleccionado.getNombre();
+			for(int i=0;i<aeropuertos.getItemCount();i++)
+			{
+				if(nombreAnterior.equals(aeropuertos.getItemAt(i)))
+				{
+					aeropuertos.removeItemAt(i);
+				}
+			}
 			verticeSeleccionado.setNombre(nombre.replace(" ",""));
+			aeropuertos.addItem(nombre);
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			verticeSeleccionado = null;
 			nombre = null;
 		}else
@@ -772,7 +781,11 @@ public class MyFrame extends JFrame implements ActionListener
 			MyPanel.ver = !MyPanel.ver;
 			if(!MyPanel.ver)
 			{
+				MyFrame.activarMouse = true;
 				panel.repaint();
+			}else 
+			{
+				MyFrame.activarMouse = false;
 			}
 		}
 	}
